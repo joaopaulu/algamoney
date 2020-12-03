@@ -1,29 +1,24 @@
 package com.example.algamoneyapi.model;
 
-import java.util.Objects;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "pessoa")
 public class Pessoa {
-
-  private static final int minSize = 3;
-  private static final int maxSize = 20;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long codigo;
 
   @NotNull
-  @Size(min = minSize, max = maxSize)
   private String nome;
+
+  @Embedded
+  private Endereco endereco;
+
+  @NotNull
+  private Boolean ativo;
 
   public Long getCodigo() {
     return codigo;
@@ -41,20 +36,42 @@ public class Pessoa {
     this.nome = nome;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (o == this)
-      return true;
-    if (!(o instanceof Pessoa)) {
-      return false;
-    }
-    Pessoa pessoa = (Pessoa) o;
-    return Objects.equals(codigo, pessoa.codigo);
+  public Endereco getEndereco() {
+    return endereco;
+  }
+
+  public void setEndereco(Endereco endereco) {
+    this.endereco = endereco;
+  }
+
+  public Boolean getAtivo() {
+    return ativo;
+  }
+
+  public void setAtivo(Boolean ativo) {
+    this.ativo = ativo;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(codigo);
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Pessoa other = (Pessoa) obj;
+    if (codigo == null) {
+      return other.codigo == null;
+    } else return codigo.equals(other.codigo);
   }
 
 }
