@@ -2,6 +2,7 @@ package com.example.algamoneyapi.repository.lancamento;
 
 import com.example.algamoneyapi.model.Lancamento;
 import com.example.algamoneyapi.repository.filter.LancamentoFilter;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -33,7 +34,23 @@ public class LancamentoRepositoryImp implements LancamentoRepositoryQuery {
     }
 
     private Predicate[] criarRestricoes(LancamentoFilter lancamentoFilter, CriteriaBuilder builder, Root<Lancamento> root) {
-        return  null;
+       List<Predicate> predicates = new ArrayList<>();
+        if(!StringUtils.isEmpty(lancamentoFilter.getDescricao())){
+            predicates.add(builder.like(
+                    builder.lower(root.get("descricao")), "%" + lancamentoFilter.getDescricao().toLowerCase() + "%"
+            ));
+        }
+        if(lancamentoFilter.getDataVencimentoDe() != null){
+            predicates.add(
+                    builder.greaterThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoDe()
+            ));
+        }
+        if(lancamentoFilter.getDataVencimentoAte() != null){
+            predicates.add(
+                    builder.lessThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoAte()
+                    ));
+        }
+        return  predicates.toArray(new Predicate[0]);
     }
 
 
