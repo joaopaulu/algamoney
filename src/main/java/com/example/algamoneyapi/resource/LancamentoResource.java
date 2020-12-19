@@ -3,14 +3,16 @@ package com.example.algamoneyapi.resource;
 import com.example.algamoneyapi.event.RecursoCriadoEvent;
 import com.example.algamoneyapi.exceptionhandler.AlgamoneyExceptionHandler;
 import com.example.algamoneyapi.model.Lancamento;
-import com.example.algamoneyapi.repository.filter.LancamentoFilter;
 import com.example.algamoneyapi.repository.LancamentoRepository;
+import com.example.algamoneyapi.repository.filter.LancamentoFilter;
 import com.example.algamoneyapi.service.LancamentoService;
 import com.example.algamoneyapi.service.exception.PessoaInexistenteOuInativaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +40,8 @@ public class LancamentoResource {
   private MessageSource messageSource;
 
   @GetMapping
-  public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter) {
-    return lancamentoRepository.filtrar(lancamentoFilter);
+  public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
+    return lancamentoRepository.filtrar(lancamentoFilter, pageable);
   }
 
   @PostMapping
