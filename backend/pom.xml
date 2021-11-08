@@ -7,11 +7,11 @@
 		<version>2.4.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.algaworks.algamoney-api</groupId>
-	<artifactId>algamoney-api</artifactId>
+	<groupId>com.algaworks.algamoney</groupId>
+	<artifactId>algamoney</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>algamoney-api</name>
-	<description>Demo project for Spring Boot</description>
+	<name>algamoney</name>
+	<description>Projeto Algamoney do Curso Fullstack Angular e Spring</description>
 
 	<properties>
 		<java.version>11</java.version>
