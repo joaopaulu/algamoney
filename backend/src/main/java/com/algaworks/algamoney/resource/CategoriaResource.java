@@ -1,8 +1,8 @@
 package com.algaworks.algamoney.resource;
 
-import com.algaworks.algamoney.repository.CategoriaRepository;
 import com.algaworks.algamoney.event.RecursoCriadoEvent;
 import com.algaworks.algamoney.model.Categoria;
+import com.algaworks.algamoney.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/categorias")
@@ -38,7 +37,8 @@ public class CategoriaResource {
 
   @GetMapping("/{codigo}")
   public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo) {
-    Optional<Categoria> categoria = this.categoriaRepository.findById(codigo);
-    return categoria.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    return this.categoriaRepository.findById(codigo)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
   }
 }

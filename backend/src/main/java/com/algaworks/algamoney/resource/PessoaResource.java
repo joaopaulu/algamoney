@@ -4,8 +4,10 @@ import com.algaworks.algamoney.model.Pessoa;
 import com.algaworks.algamoney.repository.PessoaRepository;
 import com.algaworks.algamoney.event.RecursoCriadoEvent;
 import com.algaworks.algamoney.service.PessoaService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,9 +55,12 @@ public class PessoaResource {
   }
 
   @PutMapping("/{codigo}")
-  public ResponseEntity<Pessoa> atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
-    Pessoa pessoaSalva = pessoaService.atualizar(codigo, pessoa);
-    return ResponseEntity.ok(pessoaSalva);
+  public Pessoa atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa){
+    Pessoa pessoaSalva = this.pessoaRepository.findById(codigo)
+            .orElseThrow(() -> new EmptyResultDataAccessException(1));
+
+    BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
+    return pessoaRepository.save(pessoaSalva);
   }
 
   @PutMapping("/{codigo}/ativo")
