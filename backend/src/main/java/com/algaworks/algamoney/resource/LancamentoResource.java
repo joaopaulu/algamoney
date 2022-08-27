@@ -1,16 +1,19 @@
 package com.algaworks.algamoney.resource;
 
 import com.algaworks.algamoney.exceptionhandler.AlgamoneyExceptionHandler;
+import com.algaworks.algamoney.model.Pessoa;
 import com.algaworks.algamoney.repository.LancamentoRepository;
 import com.algaworks.algamoney.event.RecursoCriadoEvent;
 import com.algaworks.algamoney.model.Lancamento;
 import com.algaworks.algamoney.repository.filter.LancamentoFilter;
 import com.algaworks.algamoney.service.LancamentoService;
 import com.algaworks.algamoney.service.exception.PessoaInexistenteOuInativaException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -53,7 +56,7 @@ public class LancamentoResource {
 
   @GetMapping("/{codigo}")
   public ResponseEntity<Lancamento> buscarPeloCodigo(@PathVariable Long codigo) {
-    Optional<Lancamento> lancamento = this.lancamentoRepository.findById(codigo);
+    Optional<Lancamento> lancamento = lancamentoRepository.findById(codigo);
     return lancamento.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
 
@@ -64,9 +67,12 @@ public class LancamentoResource {
   }
 
   @PutMapping("/{codigo}")
-  public ResponseEntity<Lancamento> atualizar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento){
-    Lancamento lancamentoSalva = lancamentoService.atualizar(codigo, lancamento);
-    return ResponseEntity.ok(lancamentoSalva);
+  public Lancamento atualizar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento){
+    Lancamento lancamentoSalva = this.lancamentoRepository.findById(codigo)
+            .orElseThrow(() -> new EmptyResultDataAccessException(1));
+
+    BeanUtils.copyProperties(lancamento, lancamentoSalva, "codigo");
+    return lancamentoRepository.save(lancamentoSalva);
   }
 
   @ExceptionHandler({PessoaInexistenteOuInativaException.class})

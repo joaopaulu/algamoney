@@ -19,7 +19,7 @@ public class LancamentoService {
     private PessoaRepository pessoaRepository;
 
     @Autowired
-    LancamentoRepository lancamentoRepository;
+    private LancamentoRepository lancamentoRepository;
 
     public Lancamento salvar(Lancamento lancamento){
         Optional<Pessoa> pessoaOpt = pessoaRepository.findById(lancamento.getPessoa().getCodigo());
