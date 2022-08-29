@@ -10,7 +10,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableResourceServer
+public class ResourceServerConfig extends ResourceServ {
 
     @SuppressWarnings("deprecation")
     @Override
@@ -18,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .passwordEncoder(NoOpPasswordEncoder.getInstance())
                 .withUser("admin")
-                .password("admin")
+                .password("{noop}admin")
                 .roles("ROLE");
     }
 
